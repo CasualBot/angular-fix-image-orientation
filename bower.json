@@ -7,6 +7,10 @@
         "dependencies": {
                 "exif-js": "jseidelin/exif-js"
         },
+        "main": [
+            "angular-fix-image-orientation.js"
+        ],
+        "ignore" : [],
         "homepage": "https://github.com/CasualBot/angular-fix-image-orientation",
         "keywords": [
             "angualar",
