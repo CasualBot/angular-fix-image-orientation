@@ -1,5 +1,7 @@
 # Angular Fix Image Orientation Directive
 
+This is a modification of a bower plugin created by Czar Pino and can be found at: https://github.com/czarpino/angular-fix-image-orientation
+
 Fix image orientation by reading image exif data and applying appropriate CSS transformations. This is, however, just a **visual** fix.
 
 ## Usage
@@ -12,7 +14,7 @@ Fix image orientation by reading image exif data and applying appropriate CSS tr
 
 You can install via Bower, downloading the source, or outright copy-pasting. For the latter 2, you'll also have to manually install [EXIF-JS](https://github.com/jseidelin/exif-js). The preferred way to install, however, is with Bower:
 
-    bower install czarpino/angular-fix-image-orientation --save
+    bower install casualbot-angular-exif-orientation --save
 
 Include js file in your HTML below AngularJS and EXIF-JS (yes, also include `exif.js`):
 
