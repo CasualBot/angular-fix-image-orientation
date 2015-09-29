@@ -1,7 +1,7 @@
 (function (angular, EXIF) {
     'use strict';
 
-    angular.module("fix-image-orientation", []).directive('imgFixOrientation', [orient]);
+    angular.module("fix-image-orientation", ['ng']).directive('imgFixOrientation', [orient]);
 
     /**
      * Directive definition.
