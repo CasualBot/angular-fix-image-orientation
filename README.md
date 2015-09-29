@@ -8,7 +8,7 @@ Fix image orientation by reading image exif data and applying appropriate CSS tr
 
     <img img-fix-orientation="imageUrl" ng-src="{{ imageUrl }}">
 
-> Note: Currently, only URL and data-url (i.e. `data:image/jpeg...`) image sources are accepted. Feel free to send PRs to support more image sources.
+> Note: Currently, only URL and data-url (i.e. `data:image/jpeg...`) image sources are accepted.
 
 ## Installation
 
