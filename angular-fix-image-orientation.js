@@ -1,142 +1,142 @@
 (function (angular, EXIF) {
-    'use strict';
+	'use strict';
 
-    angular.module("fix-image-orientation",[]).directive('imgFixOrientation', [orient]);
+	angular.module("fix-image-orientation",[]).directive('imgFixOrientation', [orient]);
 
-    /**
-     * Directive definition.
-     *
-     * @returns {object}
-     */
-    function orient() {
-        return {
-            restrict: 'A',
-            scope: {
-                'imgFixOrientation': '='
-            },
-            link: linkLogic
-        };
+	/**
+	 * Directive definition.
+	 *
+	 * @returns {object}
+	 */
+	function orient() {
+		return {
+			restrict: 'A',
+			scope: {
+				'imgFixOrientation': '='
+			},
+			link: linkLogic
+		};
 
-        /**
-         * {@inheritDoc}
-         *
-         * @param {object} scope
-         * @param {object} element
-         * @param {object} attrs
-         * @returns {undefined}
-         */
-        function linkLogic(scope, element, attrs) {
-            var imageUrl = scope.imgFixOrientation;
+		/**
+		 * {@inheritDoc}
+		 *
+		 * @param {object} scope
+		 * @param {object} element
+		 * @param {object} attrs
+		 * @returns {undefined}
+		 */
+		function linkLogic(scope, element, attrs) {
+			var imageUrl = scope.imgFixOrientation;
 
-            var image = {
-                base64: 'data:image/png;base64,' + imageUrl.base64,
-                url: imageUrl.url
-            };
+			var image = {
+				base64: 'data:image/png;base64,' + imageUrl.base64,
+				url: imageUrl.url
+			};
 
-            if (0 === image.base64.indexOf('data:image')) {
-                var base64 = image.base64.split(',')[1];
-                var exifData = EXIF.readFromBinaryFile(base64ToArrayBuffer(base64));
-                reOrient(parseInt(exifData.Orientation || 1, 10), element);
-            }
-            else {
-                var xhr = new XMLHttpRequest();
-                xhr.open("GET", image.url, true);
-                xhr.responseType = "arraybuffer";
-                xhr.onload = function(e) {
-                    var arrayBuffer = new Uint8Array(this.response);
-                    var exifData = EXIF.readFromBinaryFile(arrayBuffer.buffer);
-                    reOrient(parseInt(exifData.Orientation || 1, 10), element);
-                };
-                xhr.send();
-            }
-        }
+			if (0 === image.base64.indexOf('data:image')) {
+				var base64 = image.base64.split(',')[1];
+				var exifData = EXIF.readFromBinaryFile(base64ToArrayBuffer(base64));
+				reOrient(parseInt(exifData.Orientation || 1, 10), element);
+			}
+			else {
+				var xhr = new XMLHttpRequest();
+				xhr.open("GET", image.url, true);
+				xhr.responseType = "arraybuffer";
+				xhr.onload = function(e) {
+					var arrayBuffer = new Uint8Array(this.response);
+					var exifData = EXIF.readFromBinaryFile(arrayBuffer.buffer);
+					reOrient(parseInt(exifData.Orientation || 1, 10), element);
+				};
+				xhr.send();
+			}
+		}
 
-        /**
-         * Convert base64 string to array buffer.
-         *
-         * @param {string} base64
-         * @returns {object}
-         */
-        function base64ToArrayBuffer(base64) {
-            var binaryString = window.atob(base64);
-            var len = binaryString.length;
-            var bytes = new Uint8Array( len );
+		/**
+		 * Convert base64 string to array buffer.
+		 *
+		 * @param {string} base64
+		 * @returns {object}
+		 */
+		function base64ToArrayBuffer(base64) {
+			var binaryString = window.atob(base64);
+			var len = binaryString.length;
+			var bytes = new Uint8Array( len );
 
-            for (var i = 0; i < len; i++)        {
-                bytes[i] = binaryString.charCodeAt(i);
-            }
+			for (var i = 0; i < len; i++)        {
+				bytes[i] = binaryString.charCodeAt(i);
+			}
 
-            return bytes.buffer;
-        }
+			return bytes.buffer;
+		}
 
-        /**
-         * Reorient specified element.
-         *
-         * @param {number} orientation
-         * @param {object} element
-         * @returns {undefined}
-         */
-        function reOrient(orientation, element) {
-            switch (orientation) {
-                case 1:
-                    // No action needed
-                    break;
-                case 2:
-                    element.css({
-                        '-moz-transform': 'scaleX(-1)',
-                        '-o-transform': 'scaleX(-1)',
-                        '-webkit-transform': 'scaleX(-1)',
-                        'transform': 'scaleX(-1)',
-                        'filter': 'FlipH',
-                        '-ms-filter': "FlipH"
-                    });
-                    break;
-                case 3:
-                    element.css({
-                        'transform': 'rotate(180deg)'
-                    });
-                    break;
-                case 4:
-                    element.css({
-                        '-moz-transform': 'scaleX(-1)',
-                        '-o-transform': 'scaleX(-1)',
-                        '-webkit-transform': 'scaleX(-1)',
-                        'transform': 'scaleX(-1) rotate(180deg)',
-                        'filter': 'FlipH',
-                        '-ms-filter': "FlipH"
-                    });
-                    break;
-                case 5:
-                    element.css({
-                        '-moz-transform': 'scaleX(-1)',
-                        '-o-transform': 'scaleX(-1)',
-                        '-webkit-transform': 'scaleX(-1)',
-                        'transform': 'scaleX(-1) rotate(90deg)',
-                        'filter': 'FlipH',
-                        '-ms-filter': "FlipH"
-                    });
-                    break;
-                case 6:
-                    element.css({
-                        'transform': 'rotate(90deg)'
-                    });
-                    break;
-                case 7:
-                    element.css({
-                        '-moz-transform': 'scaleX(-1)',
-                        '-o-transform': 'scaleX(-1)',
-                        '-webkit-transform': 'scaleX(-1)',
-                        'transform': 'scaleX(-1) rotate(-90deg)',
-                        'filter': 'FlipH',
-                        '-ms-filter': "FlipH"
-                    });
-                    break;
-                case 8:
-                    element.css({
-                        'transform': 'rotate(-90deg)'
-                    });
-                    break;
-            }
-        }// End reOrient()
-    }// End orient()
+		/**
+		 * Reorient specified element.
+		 *
+		 * @param {number} orientation
+		 * @param {object} element
+		 * @returns {undefined}
+		 */
+		function reOrient(orientation, element) {
+			switch (orientation) {
+				case 1:
+					// No action needed
+					break;
+				case 2:
+					element.css({
+						'-moz-transform': 'scaleX(-1)',
+						'-o-transform': 'scaleX(-1)',
+						'-webkit-transform': 'scaleX(-1)',
+						'transform': 'scaleX(-1)',
+						'filter': 'FlipH',
+						'-ms-filter': "FlipH"
+					});
+					break;
+				case 3:
+					element.css({
+						'transform': 'rotate(180deg)'
+					});
+					break;
+				case 4:
+					element.css({
+						'-moz-transform': 'scaleX(-1)',
+						'-o-transform': 'scaleX(-1)',
+						'-webkit-transform': 'scaleX(-1)',
+						'transform': 'scaleX(-1) rotate(180deg)',
+						'filter': 'FlipH',
+						'-ms-filter': "FlipH"
+					});
+					break;
+				case 5:
+					element.css({
+						'-moz-transform': 'scaleX(-1)',
+						'-o-transform': 'scaleX(-1)',
+						'-webkit-transform': 'scaleX(-1)',
+						'transform': 'scaleX(-1) rotate(90deg)',
+						'filter': 'FlipH',
+						'-ms-filter': "FlipH"
+					});
+					break;
+				case 6:
+					element.css({
+						'transform': 'rotate(90deg)'
+					});
+					break;
+				case 7:
+					element.css({
+						'-moz-transform': 'scaleX(-1)',
+						'-o-transform': 'scaleX(-1)',
+						'-webkit-transform': 'scaleX(-1)',
+						'transform': 'scaleX(-1) rotate(-90deg)',
+						'filter': 'FlipH',
+						'-ms-filter': "FlipH"
+					});
+					break;
+				case 8:
+					element.css({
+						'transform': 'rotate(-90deg)'
+					});
+					break;
+			}
+		}// End reOrient()
+	}// End orient()
 })(window.angular, window.EXIF, window);
