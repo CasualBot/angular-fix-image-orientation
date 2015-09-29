@@ -33,8 +33,6 @@
                 url: imageUrl.url
             };
 
-            console.log(image);
-
             if (0 === image.base64.indexOf('data:image')) {
                 var base64 = image.base64.split(',')[1];
                 var exifData = EXIF.readFromBinaryFile(base64ToArrayBuffer(base64));
